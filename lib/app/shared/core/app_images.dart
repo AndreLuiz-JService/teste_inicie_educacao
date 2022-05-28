@@ -16,6 +16,7 @@ static  const searche = "images/home_page/searche.png";
 //Imagens comons na aplicação
 static  const back_bools = "images/comons/back_bools.png";
 static  const inicie_logo = "images/comons/inicie_logo.png";
+static  const userImage = "images/comons/userImage.png";
 
 //Imagens usadas na startPage
 static  const icone_home = "images/start_page/icon_home.png";

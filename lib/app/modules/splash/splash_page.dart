@@ -144,7 +144,7 @@ class _SplashPageState extends State<SplashPage> {
               ),
               TextButton(
                 onPressed: (){
-                  Modular.to.pushReplacementNamed('/start/home/');
+                  Modular.to.pushReplacementNamed('/start/');
                 },
                 child: Container(
                   decoration: BoxDecoration(

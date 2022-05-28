@@ -31,9 +31,21 @@ class AppTextStyles {
     color: AppColors.primaryBlue,
   );
 
+  static final blue14pxw600 = GoogleFonts.nunito(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.primaryBlue,
+  );
+
   static final blue12pxw400 = GoogleFonts.nunito(
     fontSize: 12,
     fontWeight: FontWeight.w400,
+    color: AppColors.primaryBlue,
+  );
+
+  static final blue12pxw600 = GoogleFonts.nunito(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
     color: AppColors.primaryBlue,
   );
 
@@ -51,6 +63,12 @@ class AppTextStyles {
 
   static final white14pxw400 = GoogleFonts.nunito(
     fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Colors.white,
+  );
+
+  static final white12pxw400 = GoogleFonts.nunito(
+    fontSize: 12,
     fontWeight: FontWeight.w400,
     color: Colors.white,
   );
