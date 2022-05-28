@@ -113,6 +113,38 @@ mixin _$StartStore on _StartStoreBase, Store {
     });
   }
 
+  late final _$_isLastPageAtom =
+      Atom(name: '_StartStoreBase._isLastPage', context: context);
+
+  @override
+  bool get _isLastPage {
+    _$_isLastPageAtom.reportRead();
+    return super._isLastPage;
+  }
+
+  @override
+  set _isLastPage(bool value) {
+    _$_isLastPageAtom.reportWrite(value, super._isLastPage, () {
+      super._isLastPage = value;
+    });
+  }
+
+  late final _$_hasErrorApiAtom =
+      Atom(name: '_StartStoreBase._hasErrorApi', context: context);
+
+  @override
+  bool get _hasErrorApi {
+    _$_hasErrorApiAtom.reportRead();
+    return super._hasErrorApi;
+  }
+
+  @override
+  set _hasErrorApi(bool value) {
+    _$_hasErrorApiAtom.reportWrite(value, super._hasErrorApi, () {
+      super._hasErrorApi = value;
+    });
+  }
+
   late final _$_indexPageAtom =
       Atom(name: '_StartStoreBase._indexPage', context: context);
 
@@ -133,16 +165,17 @@ mixin _$StartStore on _StartStoreBase, Store {
       AsyncAction('_StartStoreBase.getInitialApi', context: context);
 
   @override
-  Future getInitialApi() {
-    return _$getInitialApiAsyncAction.run(() => super.getInitialApi());
+  Future getInitialApi({BuildContext? context}) {
+    return _$getInitialApiAsyncAction
+        .run(() => super.getInitialApi(context: context));
   }
 
   late final _$addPokemonsAsyncAction =
       AsyncAction('_StartStoreBase.addPokemons', context: context);
 
   @override
-  Future addPokemons() {
-    return _$addPokemonsAsyncAction.run(() => super.addPokemons());
+  Future addPokemons(BuildContext context) {
+    return _$addPokemonsAsyncAction.run(() => super.addPokemons(context));
   }
 
   late final _$_StartStoreBaseActionController =

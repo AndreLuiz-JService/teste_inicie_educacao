@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
+import 'package:teste_inicie_educacao/app/shared/core/app_text_styles.dart';
 
 import 'interfaces/pokemon_api_interface.dart';
 import 'interfaces/types_api_interface.dart';
@@ -64,13 +68,11 @@ abstract class _StartStoreBase with Store implements Disposable {
     return filterPokemon;
   }
 
-
   @observable
   List<TypePokemon>? _listTypes = [];
   List<TypePokemon> get listTypes => _listTypes!;
 
   ScrollController gridViewController = ScrollController();
-  
 
   @observable
   bool _isInitialLoading = false;
@@ -80,36 +82,77 @@ abstract class _StartStoreBase with Store implements Disposable {
   bool _loadingAddPokenos = false;
   bool get loadingAddPokenos => _loadingAddPokenos;
 
-  int offsetCount = 0;
+  @observable
+  bool _isLastPage = false;
+  bool get isLastPage => _isLastPage;
+
+  @observable
+  bool _hasErrorApi = false;
+  bool get hasErrorApi => _hasErrorApi;
+
+  int _offsetCount = 0;
   //função que busca os dados inicias da aplicação
   //nessa função pegamos os tipos de pokemons e a primeira pagina da api de pokemons
   @action
-  getInitialApi() async {
+  getInitialApi({BuildContext? context}) async {
     _isInitialLoading = true;
-    final initialPokemons =
-        await apiPokemonsRepository.getPokemonsApi(offsetCount);
-    _listPokemons = initialPokemons.asObservable();
-
-    final types = await apiTypesRepository.getTypessApi();
-    _listTypes = types;
-    _isInitialLoading = false;
+    try {
+      final initialPokemons =
+          await apiPokemonsRepository.getPokemonsApi(_offsetCount);
+      _listPokemons.addAll(initialPokemons);
+      _offsetCount += 20;
+      final types = await apiTypesRepository.getTypessApi();
+      _listTypes = types;
+      if(_hasErrorApi){
+        _hasErrorApi = false;
+      }
+    } catch (e) {
+      _hasErrorApi = true;
+      if (context != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            'Erro ao carregar os dados, verifique sua conexão',
+            style: AppTextStyles.white14pxw400,
+          ),
+          dismissDirection: DismissDirection.horizontal,
+          backgroundColor: Colors.red,
+        ));
+      }
+    } finally {
+      _isInitialLoading = false;
+    }
   }
 
   //função chamada quando o usuario chega ao final da lista
   //a função busca mais uma pagina na api de pokemons
   @action
-  addPokemons() async {
-    if (_loadingAddPokenos) {
+  addPokemons(BuildContext context) async {
+    if (_loadingAddPokenos || _isLastPage) {
       return;
     }
-    _loadingAddPokenos = true;
-    offsetCount += 20;
-    final newsPokemons =
-        await apiPokemonsRepository.getPokemonsApi(offsetCount);
-    _listPokemons.addAll(newsPokemons);
-    _loadingAddPokenos = false;
+    try {
+      _loadingAddPokenos = true;
+      final newsPokemons =
+          await apiPokemonsRepository.getPokemonsApi(_offsetCount);
+      _listPokemons.addAll(newsPokemons);
+      _offsetCount += 20;
+    } catch (e) {
+      if (e.toString() == 'Last Page') {
+        _isLastPage = true;
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          'Erro ao carregar os Pokemons, verifique sua conexão',
+          style: AppTextStyles.white14pxw400,
+        ),
+        dismissDirection: DismissDirection.horizontal,
+        backgroundColor: Colors.red,
+      ));
+    } finally {
+      _loadingAddPokenos = false;
+    }
   }
-
 
   // seção que controla a PageView
   PageController pageViewController = PageController();
@@ -117,18 +160,17 @@ abstract class _StartStoreBase with Store implements Disposable {
   int _indexPage = 0;
   int get indexPage => _indexPage;
 
-  @action setInitalIndex(int index){
+  @action
+  setInitalIndex(int index) {
     pageViewController = PageController(initialPage: index);
     _indexPage = index;
   }
-  
+
   @action
   void setindexPage(int index) {
     pageViewController.jumpToPage(index);
     _indexPage = index;
   }
-
- 
 
   //DIspode dos controllers
 

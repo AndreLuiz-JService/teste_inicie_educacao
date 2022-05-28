@@ -214,7 +214,7 @@ class PokemonSelectedPageState extends State<PokemonSelectedPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ItenNavBar(
                       image: Image.asset(AppImages.icone_home),

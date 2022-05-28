@@ -266,159 +266,188 @@ class HomePageState extends State<HomePage> {
                         ),
                       ),
                     )
-                  : Stack(
-                      children: [
-                        GridView.builder(
-                          controller: widget.store.gridViewController,
-                          physics: const BouncingScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 8,
-                            mainAxisExtent: 130,
-                            mainAxisSpacing: 12,
-                          ),
-                          itemBuilder: (context, index) {
-                            if (widget.store.listPokemons.length - 1 == index ||
-                                widget.store.listPokemons.isEmpty) {
-                              widget.store.addPokemons();
-                            }
+                  : widget.store.listPokemons.isEmpty &&
+                          widget.store.hasErrorApi
+                      ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: AppColors.primaryRed),
+                                onPressed: () {
+                                  widget.store
+                                      .getInitialApi(context: context);
+                                },
+                                child: Text(
+                                  'carregar Dados',
+                                  style: AppTextStyles.white18pxw700,
+                                )),
+                          ],
+                        ),
+                      )
+                      : Stack(
+                          children: [
+                            GridView.builder(
+                              controller: widget.store.gridViewController,
+                              physics: const BouncingScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 8,
+                                mainAxisExtent: 130,
+                                mainAxisSpacing: 12,
+                              ),
+                              itemBuilder: (context, index) {
+                                if (widget.store.listPokemons.length - 1 ==
+                                        index ||
+                                    widget.store.listPokemons.isEmpty) {
+                                  widget.store.addPokemons(context);
+                                }
 
-                            bool indexpar() {
-                              if (index == 0 || (index % 2 == 0)) {
-                                return true;
-                              } else {
-                                return false;
-                              }
-                            }
+                                bool indexpar() {
+                                  if (index == 0 || (index % 2 == 0)) {
+                                    return true;
+                                  } else {
+                                    return false;
+                                  }
+                                }
 
-                            Pokemon pokemon = Pokemon();
-                            if (widget.store.listPokemons.isNotEmpty) {
-                              pokemon = widget.store.listPokemons[index];
-                            }
+                                Pokemon pokemon = Pokemon();
+                                if (widget.store.listPokemons.isNotEmpty) {
+                                  pokemon = widget.store.listPokemons[index];
+                                }
 
-                            return widget.store.listPokemons.isEmpty
-                                ? SizedBox()
-                                : Center(
-                                    child: InkWell(
-                                      onTap: () {
-                                        Modular.to.pushNamed('/pokemon_select/',
-                                            arguments: ArgumentsNavigation(
-                                                ontap: (int index) {
-                                                  Modular.to.pop(context);
-                                                  widget.store
-                                                      .setindexPage(index);
-                                                },
-                                                pokemon: pokemon));
-                                      },
-                                      child: Padding(
-                                        padding: EdgeInsets.fromLTRB(
-                                            indexpar() ? 25 : 0,
-                                            0,
-                                            indexpar() ? 0 : 25,
-                                            0),
-                                        child: Container(
-                                          height: 120,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                  blurRadius: 5,
-                                                  color: Color.fromRGBO(
-                                                      0, 0, 0, 0.15),
-                                                  offset: Offset(0, 4)),
-                                            ],
-                                          ),
+                                return widget.store.listPokemons.isEmpty
+                                    ? SizedBox()
+                                    : Center(
+                                        child: InkWell(
+                                          onTap: () {
+                                            Modular.to.pushNamed(
+                                                '/pokemon_select/',
+                                                arguments: ArgumentsNavigation(
+                                                    ontap: (int index) {
+                                                      Modular.to.pop(context);
+                                                      widget.store
+                                                          .setindexPage(index);
+                                                    },
+                                                    pokemon: pokemon));
+                                          },
                                           child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8, 12, 8, 12),
-                                            child: Row(
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                            padding: EdgeInsets.fromLTRB(
+                                                indexpar() ? 25 : 0,
+                                                0,
+                                                indexpar() ? 0 : 25,
+                                                0),
+                                            child: Container(
+                                              height: 120,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                      blurRadius: 5,
+                                                      color: Color.fromRGBO(
+                                                          0, 0, 0, 0.15),
+                                                      offset: Offset(0, 4)),
+                                                ],
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8, 12, 8, 12),
+                                                child: Row(
                                                   children: [
-                                                    Text(
-                                                      pokemon.formatedName,
-                                                      style: AppTextStyles
-                                                          .blue16pxw700,
-                                                    ),
-                                                    Container(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      decoration: BoxDecoration(
-                                                          color: pokemon
-                                                              .types![0].cor!,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5)),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                vertical: 4,
-                                                                horizontal: 12),
-                                                        child: Text(
-                                                          pokemon
-                                                              .types![0].name!,
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          pokemon.formatedName,
                                                           style: AppTextStyles
-                                                              .white14pxw400,
+                                                              .blue16pxw700,
                                                         ),
-                                                      ),
+                                                        Container(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          decoration: BoxDecoration(
+                                                              color: pokemon
+                                                                  .types![0]
+                                                                  .cor!,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5)),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    vertical: 4,
+                                                                    horizontal:
+                                                                        12),
+                                                            child: Text(
+                                                              pokemon.types![0]
+                                                                  .name!,
+                                                              style: AppTextStyles
+                                                                  .white14pxw400,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 4,
+                                                                  top: 4),
+                                                          child: Text(
+                                                            pokemon.formatedId,
+                                                            style: AppTextStyles
+                                                                .blue12pxw400,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 4, top: 4),
-                                                      child: Text(
-                                                        pokemon.formatedId,
-                                                        style: AppTextStyles
-                                                            .blue12pxw400,
-                                                      ),
-                                                    ),
+                                                    Expanded(
+                                                        child: Image.network(
+                                                      pokemon.image!,
+                                                    ))
                                                   ],
                                                 ),
-                                                Expanded(
-                                                    child: Image.network(
-                                                  pokemon.image!,
-                                                ))
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ),
+                                      );
+                              },
+                              itemCount: widget.store.listPokemons.isEmpty
+                                  ? 1
+                                  : widget.store.listPokemons.length,
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Visibility(
+                                  visible: widget.store.loadingAddPokenos,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        width: 35,
+                                        height: 35,
+                                        child: CircularProgressIndicator(
+                                          backgroundColor: Colors.transparent,
+                                          valueColor: AlwaysStoppedAnimation(
+                                              AppColors.primaryRed),
+                                        ),
                                       ),
                                     ),
-                                  );
-                          },
-                          itemCount: widget.store.listPokemons.isEmpty
-                              ? 1
-                              : widget.store.listPokemons.length,
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Visibility(
-                              visible: widget.store.loadingAddPokenos,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    width: 35,
-                                    height: 35,
-                                    child: CircularProgressIndicator(
-                                      backgroundColor: Colors.transparent,
-                                      valueColor: AlwaysStoppedAnimation(
-                                          AppColors.primaryRed),
-                                    ),
-                                  ),
-                                ),
-                              )),
-                        )
-                      ],
-                    );
+                                  )),
+                            )
+                          ],
+                        );
             }),
           ),
         ],
